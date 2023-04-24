@@ -1,13 +1,24 @@
-import { configureStore } from '@reduxjs/toolkit';
-import todoReducer, { counterTest } from './todoSlice';
+import { createStore } from 'redux';
 
-const store = configureStore({
-  reducer: {
-    list: todoReducer,
-    counter: counterTest.reducer,
-  },
-});
+type Action = {
+  type: string;
+  payload: number;
+};
 
-export default store;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+const initial = {
+  value: 0,
+};
+
+const reducer = (state = initial, action: Action) => {
+  switch (action.type) {
+    case 'ADD':
+      return { ...state, value: state.value + action.payload };
+      break;
+    case 'DELETE':
+      return { ...state, value: state.value - action.payload };
+    default:
+      return state;
+  }
+};
+
+export const store = createStore(reducer);

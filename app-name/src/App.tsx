@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from './components/store/index';
-import { addTodo, fetchTodo } from './components/store/todoSlice';
-import Input from 'components/Input';
-import ListToDo from 'components/List';
-import Counter from 'components/Counter';
+import { useDispatch, useSelector } from 'react-redux';
 
-export interface List {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+type State = {
+  value: number;
+};
 
 function App() {
-  const [text, setText] = useState('');
-  const dispatch: AppDispatch = useDispatch();
+  const count = useSelector((state: State) => state.value);
+  const dispatch = useDispatch();
+  const [incrementAmount, setIncrementAmount] = useState<number>(1);
 
-  const addTask = () => {
-    dispatch(addTodo(text));
-    setText('');
+  const increment = () => {
+    dispatch({ type: 'ADD', payload: incrementAmount });
   };
 
-  useEffect(() => {
-    dispatch(fetchTodo());
-  }, [dispatch]);
-
+  const decrement = () => {
+    dispatch({ type: 'DELETE', payload: incrementAmount });
+  };
   return (
     <div className="App">
-      <Counter />
-      <Input text={text} addList={addTask} setText={setText} />
-      <ListToDo />
+      <input
+        type="number"
+        value={incrementAmount}
+        onChange={(e) => setIncrementAmount(+e.target.value)}
+      />
+      <button onClick={() => increment()}>+</button>
+      <span>{count}</span>
+      <button onClick={() => decrement()}>-</button>
     </div>
   );
 }
