@@ -1,24 +1,10 @@
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
+import reducer from './reducer';
+import reducerCustomer from './reduserCustomer';
 
-type Action = {
-  type: string;
-  payload: number;
-};
+const rootReducer = combineReducers({
+  counter: reducer,
+  customers: reducerCustomer,
+});
 
-const initial = {
-  value: 0,
-};
-
-const reducer = (state = initial, action: Action) => {
-  switch (action.type) {
-    case 'ADD':
-      return { ...state, value: state.value + action.payload };
-      break;
-    case 'DELETE':
-      return { ...state, value: state.value - action.payload };
-    default:
-      return state;
-  }
-};
-
-export const store = createStore(reducer);
+export const store = createStore(rootReducer);
