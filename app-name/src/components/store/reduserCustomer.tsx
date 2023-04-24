@@ -12,7 +12,6 @@ const initial = {
 const reducerCustomer = (state = initial, action: Action) => {
   switch (action.type) {
     case 'ADD-CUSTOMER':
-      console.log(state.customers);
       return { ...state, customers: [...state.customers, action.payload] };
     case 'DELETE-CUSTOMER':
       state.customers.pop();
