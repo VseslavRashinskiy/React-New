@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchAsync } from 'components/store/customerReducer';
+import { addCustomerAction, deleteCustomer } from 'components/store/reduserCustomer';
 
 type State = {
   counter: {
@@ -10,16 +15,17 @@ type State = {
     customers: [];
   };
 };
+
 export type Customer = {
   id: number;
-  name: string;
+  title: string;
 };
 
 function App() {
   const count = useSelector((state: State) => state.counter.value);
-  const customers = useSelector((state: State) => state.customers.customers);
+  const customers = useSelector((state: State) => state.customers.customers) as Customer[];
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<ThunkDispatch<State, object, AnyAction>>();
   const [incrementAmount, setIncrementAmount] = useState<number>(1);
   const [customerName, setCustomerName] = useState<string>('');
 
@@ -31,13 +37,13 @@ function App() {
     dispatch({ type: 'DELETE', payload: incrementAmount });
   };
 
-  const addCustomer = (name: string) => {
-    if (name.trim().length > 0) {
+  const addCustomer = (title: string) => {
+    if (title.trim().length > 0) {
       const customer = {
-        name,
+        title,
         id: customers.length,
       };
-      dispatch({ type: 'ADD-CUSTOMER', payload: customer });
+      dispatch(addCustomerAction(customer));
       setCustomerName('');
     }
   };
@@ -57,11 +63,13 @@ function App() {
       <div>
         <input type="text" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
         <button onClick={() => addCustomer(customerName)}>Add Customer</button>
-        <button onClick={() => dispatch({ type: 'DELETE-CUSTOMER' })}>Deleted Last Customer</button>
+        <button onClick={() => dispatch(deleteCustomer())}>Deleted Last Customer</button>
+        <button onClick={() => dispatch(fetchAsync())}>Async Customer</button>
+
         {customers.length > 0 ? (
           <div>
-            {customers.map((el: Customer) => (
-              <div key={el.id}>{el.name}</div>
+            {customers.map((el: Customer, index: number) => (
+              <div key={index}>{el.title}</div>
             ))}
           </div>
         ) : (
